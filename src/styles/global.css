@@ -1,0 +1,4 @@
+/* para utilização do tailwind, preciso ter isso dentro do meu arquivo  */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
