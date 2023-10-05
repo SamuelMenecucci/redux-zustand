@@ -1,9 +1,9 @@
 import ReactPlayer from "react-player"; //lib que permite que eu faça embed de vídeos de vários sources (providers). https://www.npmjs.com/package/react-player
-import { useDispatch } from "react-redux";
 import { next, useCurrentLesson } from "../store/slices/player";
+import { useAppDispatch } from "../store";
 
 export const Video = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { currentLesson } = useCurrentLesson();
 
