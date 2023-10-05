@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const playerSlice = createSlice({
   name: "player",
@@ -61,13 +61,37 @@ const playerSlice = createSlice({
     currentLessonIndex: 0,
   },
   reducers: {
-    play: (state, action) => {
+    //eu consigo tipar a action que aguardo receber. passo o PayloadAction e dentro dele passo o tipo de dado que eu espero receber.
+    play: (state, action: PayloadAction<[number, number]>) => {
       state.currentModuleIndex = action.payload[0];
       state.currentLessonIndex = action.payload[1];
+    },
+    //na minha função next eu não espero ter nenhum payload, então posso remover o parametro de action, assim ,eu não preciso passar parametro para função na hora de eu chamar ela.
+    next: (state) => {
+      //para que eu possa dar play no próximo vídeo, preciso fazer algumas verificações, como se existe uma próxima lesson e se existe um próximo módulo.
+      const nextLessonIndex = state.currentLessonIndex + 1;
+
+      const nextLesson =
+        state.course.modules[state.currentModuleIndex].lessons[nextLessonIndex];
+
+      if (nextLesson) {
+        state.currentLessonIndex = nextLessonIndex;
+        return;
+      }
+
+      const nextModuleIndex = state.currentModuleIndex + 1;
+
+      const nextModule = state.course.modules[nextModuleIndex];
+
+      if (nextModule) {
+        state.currentModuleIndex = nextModuleIndex;
+        state.currentLessonIndex = 0;
+        return;
+      }
     },
   },
 });
 
 export const player = playerSlice.reducer;
 
-export const { play } = playerSlice.actions;
+export const { play, next } = playerSlice.actions;
