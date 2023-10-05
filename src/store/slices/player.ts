@@ -19,12 +19,14 @@ export interface PlayerState {
   course: Course | null;
   currentModuleIndex: number;
   currentLessonIndex: number;
+  isLoading: boolean;
 }
 
 const initialState: PlayerState = {
   course: null,
   currentModuleIndex: 0,
   currentLessonIndex: 0,
+  isLoading: true,
 };
 
 //as actions do redux devem ser funções puras, ou seja, que não são async, não retornam promises, não possu side-effects. createAsyncThunk pode ser utilizada como uma action porém assincrona. como primeiro parametro eu passo uma string, que é o nome da action. e como segundo parametro a função. o intuíto de utilizar o createAsyncThunk é podermos fazer a busca dos nossos cursos aqui pela store. como iremos trabalhar com promise, teremos que utiliza-lo pois não iremos conseguir fazer isso dentro das actions comuns.,
@@ -70,11 +72,16 @@ export const playerSlice = createSlice({
       }
     },
   },
-  //quando utilizamos o asyncThunk e são criadas as actions de pending, fulfilled ou reject, podemos utilizar uma opção chamada extraReducers. essa função recebe um parametro chamado builder. agora dentro do builder eu acesso o método addCase, que no caso é a nossa função de loadCourse, passando o fulfilled do loadCourse. ou seja, eu quero executar alguma coisa quando a ação de fulfilled do meu asyncthunk for executada.
+  //quando utilizamos o asyncThunk e são criadas as actions de pending, fulfilled ou reject, podemos utilizar uma opção chamada extraReducers. essa função recebe um parametro chamado builder. agora dentro do builder eu acesso o método addCase, que no caso é a nossa função de loadCourse, passando o fulfilled do loadCourse. ou seja, eu quero executar alguma coisa quando a ação de fulfilled do meu async thunk for executada.
   //o extraReducers é uma forma de fazer com que um reducer do redux ouça actions (disparo de ações) de outros locais, que podem ser outros reducers(slices) ou o async thunks
   extraReducers(builder) {
+    builder.addCase(loadCourse.pending, (state, action) => {
+      state.isLoading = true;
+    });
+
     builder.addCase(loadCourse.fulfilled, (state, action) => {
       state.course = action.payload;
+      state.isLoading = false;
     });
   },
 });
