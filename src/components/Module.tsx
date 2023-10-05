@@ -25,7 +25,7 @@ export const Module = ({
   });
 
   const lessons = useAppSelector(
-    (state) => state.player.course.modules[moduleIndex].lessons
+    (state) => state?.player?.course?.modules[moduleIndex].lessons
   );
 
   return (
@@ -45,7 +45,7 @@ export const Module = ({
 
       <Collapsible.Content>
         <nav className="relative flex flex-col gap-4 p-6">
-          {lessons.map((lesson, lessonIndex) => (
+          {lessons?.map((lesson, lessonIndex) => (
             <Lesson
               key={lesson.id}
               title={lesson.title}
