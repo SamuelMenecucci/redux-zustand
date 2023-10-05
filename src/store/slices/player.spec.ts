@@ -37,7 +37,7 @@ const exampleState = {
 describe("player slice", () => {
   const initialState = playerSlice.getInitialState();
   it("should be able to play", () => {
-    //o reducer recebe dois parametros. o primeiro é o estado antes de acontecer a ação e o segundo é o que eu estou querendo fazer. por isso passo o initialState.
+    //o reducer recebe dois parâmetros. o primeiro é o estado antes de acontecer a ação e o segundo é o que eu estou querendo fazer. por isso passo o initialState.
     const state = reducer(initialState, play([1, 2]));
 
     expect(state.currentModuleIndex).toEqual(1);
