@@ -1,22 +1,24 @@
 import ReactPlayer from "react-player"; //lib que permite que eu faça embed de vídeos de vários sources (providers). https://www.npmjs.com/package/react-player
-import { next, useCurrentLesson } from "../store/slices/player";
-import { useAppDispatch, useAppSelector } from "../store";
 import { Loader } from "lucide-react";
+import { useCurrentLesson, useStore } from "../zustand-store";
 
 export const Video = () => {
-  const dispatch = useAppDispatch();
-
   const { currentLesson } = useCurrentLesson();
 
-  const isCourseloading = useAppSelector((state) => state.player.isLoading);
+  const { isLoading, next } = useStore((store) => {
+    return {
+      isLoading: store.isLoading,
+      next: store.next,
+    };
+  });
 
   const handlePlayNext = () => {
-    dispatch(next());
+    next();
   };
 
   return (
     <div className="w-full bg-zinc-950 aspect-video">
-      {isCourseloading ? (
+      {isLoading ? (
         <div className="flex h-full items-center justify-center">
           <Loader className="w-6 h-6 text-zinc-400 animate-spin" />
         </div>

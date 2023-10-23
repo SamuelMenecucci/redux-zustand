@@ -1,13 +1,14 @@
-import { useAppSelector } from "../store";
-import { useCurrentLesson } from "../store/slices/player";
+import { useStore, useCurrentLesson } from "../zustand-store";
 
 export const Header = () => {
-  //desestruturando o retorno do meu useSelector
   const { currentModule, currentLesson } = useCurrentLesson();
 
-  const isCourseloading = useAppSelector((state) => state.player.isLoading);
+  // quando utilizamos o useStore, desustruturando somente o que iremos usar, assim como no redux, devemos tomar cuidado para não utilizar o useStore sem passar nenhum parametro, pois dessa forma irá ficar observando todos os estados do zustand, e para qualquer alteração será renderizado o componente novamente. então, aqui, como queremos observar somente o isLoading, e não todo o restante do estado, é importante que eu pegue a store e retorne somente o que é necessário.
+  // const { isLoading } = useStore();
 
-  if (isCourseloading) {
+  const isLoading = useStore((store) => store.isLoading);
+
+  if (isLoading) {
     return <h1 className="text-2xl font-bold">Carregando...</h1>;
   }
 

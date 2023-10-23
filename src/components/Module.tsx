@@ -1,8 +1,8 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { ChevronDown } from "lucide-react";
 import { Lesson } from "./Lesson";
-import { useAppDispatch, useAppSelector } from "../store";
 import { play } from "../store/slices/player";
+import { useStore } from "../zustand-store";
 
 interface ModuleProps {
   title: string;
@@ -15,16 +15,16 @@ export const Module = ({
   amountOfLessons,
   moduleIndex,
 }: ModuleProps) => {
-  const dispatch = useAppDispatch();
-
-  const { currentModuleIndex, currentLessonIndex } = useAppSelector((state) => {
-    const { currentModuleIndex, currentLessonIndex } = state.player;
-
-    return { currentModuleIndex, currentLessonIndex };
-  });
-
-  const lessons = useAppSelector(
-    (state) => state?.player?.course?.modules[moduleIndex].lessons
+  //com o zustand eu consigo fazer a mesma lógica de retornar da função da store somente o que eu preciso.isso é importante pois se desestruturarmos o que precisamos direto do useStore, sem passarmos nenhum parametro para o useStore, o react irá ficar observando todos os estados do zustand, e para qualquer alteração será renderizado o componente novamente. então, aqui, como queremos observar somente o isLoading, e não todo o restante do estado, é importante que eu pegue a store e retorne somente o que é necessário.
+  const { currentLessonIndex, currentModuleIndex, play, lessons } = useStore(
+    (store) => {
+      return {
+        lessons: store?.course?.modules[moduleIndex].lessons,
+        currentLessonIndex: store.currentLessonIndex,
+        currentModuleIndex: store.currentModuleIndex,
+        play: store.play,
+      };
+    }
   );
 
   return (
@@ -49,7 +49,7 @@ export const Module = ({
               key={lesson.id}
               title={lesson.title}
               duration={lesson.duration}
-              onPlay={() => dispatch(play([moduleIndex, lessonIndex]))}
+              onPlay={() => play([moduleIndex, lessonIndex])}
               isCurrent={
                 currentModuleIndex === moduleIndex &&
                 currentLessonIndex === lessonIndex
