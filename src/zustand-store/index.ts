@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { api } from "../services/api";
 
 export interface Course {
   id: number;
@@ -23,6 +24,7 @@ export interface PlayerState {
 
   play: (moduleAndLessonIndex: [number, number]) => void;
   next: () => void;
+  loadCourse: () => Promise<void>; // como o loadCourse é uma função asincrona, ela deve retornar uma promise.
 }
 
 //sobre os parametros set e get: o set e o get são basicamente duas funções que eu posso utilizar o get para buscar informações que estão salvas no estado enquanto o set é uma função para eu atualizar alguma informação do estado.
@@ -33,6 +35,17 @@ export const useStore = create<PlayerState>((set, get) => {
     currentModuleIndex: 0,
     currentLessonIndex: 0,
     isLoading: true,
+
+    //no redux, para criarmos uma action asssincrona, tivemos que utilizar o async thunk, que era onde puxavamos os dados da nossa api. com o zustand, basta criarmos o método assincrono direto. agora o método já pode fazer qualquer tipo de ação assincrona.
+    loadCourse: async () => {
+      set({
+        isLoading: true,
+      });
+
+      const response = await api.get("/courses/1");
+
+      set({ course: response.data, isLoading: false });
+    },
 
     play: (moduleAndLessonIndex: [number, number]) => {
       //fazendo a desestruturação do array q eu recebo como parametro.
